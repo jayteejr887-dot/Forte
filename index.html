@@ -8,7 +8,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="FORTE GT">
-<meta name="description" content="Black-and-red single-screen Kia Forte GT-Line dashboard with navigation, pinned Driving playlist shortcut, vehicle data placeholder and Kia Access shortcut."><title>FORTE GT — Driver Interface</title>
+<meta name="description" content="Black-and-red single-screen Kia Forte GT-Line dashboard with GPS speedometer, compass, navigation, pinned Driving playlist, OBD-II setup and Kia Access shortcut."><title>FORTE GT — Driver Interface</title>
 <style>
 :root{color-scheme:dark;--bg:#070809;--panel:#111317;--panel-hi:#17191e;--red:#ff343b;--red-dark:#94131b;--white:#f7f7f8;--muted:#969ba5;--line:#282b31}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -91,15 +91,16 @@ button{font:inherit;touch-action:manipulation}
         <img class="car-photo" src="forte_gt_black_kia_illustration.jpg" alt="Black 2022 Kia Forte GT-Line illustration">
         <div class="vehicle-label">2022 KIA FORTE GT-LINE</div>
       </div>
-      <div class="vehicle-status"><i class="statusdot"></i><span>OBD ADAPTER NOT CONNECTED · DEMO VALUES ONLY</span></div>
+      <div class="vehicle-status"><i class="statusdot" id="gpsDot"></i><span id="gpsStatus">GPS STANDBY · TAP ENABLE GPS</span></div>
       <div class="gauges">
-        <div class="gauge"><div class="gauge-label">ENGINE RPM</div><div class="gauge-value">— <span class="unit">rpm</span></div></div>
-        <div class="gauge"><div class="gauge-label">COOLANT TEMP</div><div class="gauge-value">— <span class="unit">°F</span></div></div>
+        <div class="gauge speed-gauge"><div class="gauge-label">GPS SPEED</div><div class="gauge-value" id="gpsSpeed">— <span class="unit">mph</span></div></div>
+        <div class="gauge"><div class="gauge-label">COMPASS</div><div class="gauge-value" id="compassValue">— <span class="unit">°</span></div><div class="gauge-label" id="compassDirection" style="margin-top:4px">HEADING UNAVAILABLE</div></div>
       </div>
       <div class="vehicle-buttons">
-        <button class="action primary" id="carScanner"><span class="arrow">↗</span> CAR SCANNER</button>
-        <button class="action" id="vehicleInfo">VEHICLE INFO</button>
+        <button class="action primary" id="enableGPS"><span class="arrow">⌖</span> ENABLE GPS</button>
+        <button class="action" id="carScanner"><span class="arrow">↗</span> CAR SCANNER</button>
       </div>
+      <button class="action" id="vehicleInfo" style="margin-top:8px;min-height:34px">OBD SETUP · ENGINE DATA REQUIRES ADAPTER</button>
     </section>
     <section class="panel music">
       <div class="album">♫</div>
@@ -123,8 +124,36 @@ document.getElementById('openMusic').addEventListener('click',()=>{
   location.href='music://';
 });
 document.getElementById('carScanner').addEventListener('click',()=>location.href='https://apps.apple.com/us/app/car-scanner-elm-obd2/id1259933623');
+const gpsSpeed=document.getElementById('gpsSpeed'),gpsStatus=document.getElementById('gpsStatus'),gpsDot=document.getElementById('gpsDot');
+const compassValue=document.getElementById('compassValue'),compassDirection=document.getElementById('compassDirection');
+let gpsWatch=null;
+function setGpsStatus(message,active=false){gpsStatus.textContent=message;gpsDot.style.background=active?'#45dc91':'#ffb13b';gpsDot.style.boxShadow=active?'0 0 8px #45dc9177':'0 0 8px #ffb13b55';}
+function directionName(deg){return ['N','NE','E','SE','S','SW','W','NW'][Math.round(deg/45)%8];}
+function updateHeading(deg){if(!Number.isFinite(deg))return;deg=((deg%360)+360)%360;compassValue.innerHTML=Math.round(deg)+' <span class="unit">°</span>';compassDirection.textContent=directionName(deg)+' · GPS / DEVICE HEADING';}
+function enableHeading(){
+  if(typeof DeviceOrientationEvent==='undefined')return;
+  const start=()=>window.addEventListener('deviceorientation',e=>{if(Number.isFinite(e.webkitCompassHeading))updateHeading(e.webkitCompassHeading);else if(Number.isFinite(e.alpha))updateHeading(360-e.alpha);},{capture:true});
+  if(typeof DeviceOrientationEvent.requestPermission==='function')DeviceOrientationEvent.requestPermission().then(result=>{if(result==='granted')start();}).catch(()=>{});else start();
+}
+document.getElementById('enableGPS').addEventListener('click',()=>{
+ if(!('geolocation' in navigator)){setGpsStatus('GPS NOT AVAILABLE · CHECK IPAD SETTINGS');return;}
+ if(!window.isSecureContext){setGpsStatus('GPS NEEDS HTTPS · OPEN GITHUB PAGES');return;}
+ setGpsStatus('REQUESTING LOCATION PERMISSION…');enableHeading();
+ if(gpsWatch!==null)navigator.geolocation.clearWatch(gpsWatch);
+ gpsWatch=navigator.geolocation.watchPosition(pos=>{
+   const c=pos.coords;
+   if(c.speed!==null&&Number.isFinite(c.speed)){gpsSpeed.innerHTML=Math.max(0,Math.round(c.speed*2.236936))+' <span class="unit">mph</span>';}
+   else gpsSpeed.innerHTML='— <span class="unit">mph</span>';
+   if(Number.isFinite(c.heading)&&c.speed!==null&&c.speed>0.8)updateHeading(c.heading);
+   const accuracy=Number.isFinite(c.accuracy)?Math.round(c.accuracy):'?';
+   setGpsStatus('GPS ACTIVE · ACCURACY ±'+accuracy+' M',true);
+ },err=>{
+   const msg=err.code===1?'LOCATION DENIED · ALLOW IN IPAD SETTINGS':err.code===2?'GPS SIGNAL UNAVAILABLE · MOVE OUTDOORS':'GPS TIMED OUT · TRY AGAIN';
+   setGpsStatus(msg);gpsSpeed.innerHTML='— <span class="unit">mph</span>';
+ },{enableHighAccuracy:true,maximumAge:1000,timeout:15000});
+});
 document.getElementById('kiaAccess').addEventListener('click',()=>location.href='https://apps.apple.com/us/app/kia-access/id1280548773');
-document.getElementById('vehicleInfo').addEventListener('click',()=>alert('Live vehicle readings require a compatible OBD-II adapter and a supported connection in Car Scanner. This dashboard does not control the vehicle. Keep the factory display and instrument cluster available.'));
+document.getElementById('vehicleInfo').addEventListener('click',()=>alert('LIVE DATA SETUP\n\n1. Use an iOS-compatible Bluetooth Low Energy (BLE) OBD-II adapter. Recommended budget option: Veepeak OBDCheck BLE+ (check current price and listing).\n2. Install Car Scanner ELM OBD2 from the App Store.\n3. Plug the adapter into the OBD-II port under the driver-side dashboard and turn the ignition on.\n4. In Car Scanner: Settings > Adapter OBDII ELM327 > Connection type: Bluetooth LE (4.0+) > Device name: VEEPEAK. Connect inside the app; do not pair from iPad Bluetooth Settings.\n5. In Car Scanner, open All Sensors / Live Data and choose supported values such as RPM, coolant temperature, and vehicle speed.\n\nIMPORTANT: This GitHub Pages dashboard cannot directly read BLE OBD data in ordinary iPad Safari, so its gauges remain placeholders. The adapter and Car Scanner can show live data in the app, but they do not automatically feed values into this webpage. Do not use the iPad dashboard as a replacement for the factory instrument cluster.'));
 </script>
 </body>
 </html>
