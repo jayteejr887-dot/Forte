@@ -8,14 +8,14 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="FORTE GT">
-<meta name="description" content="Interactive Kia Forte GT-Line web dashboard with GPS speedometer, compass, live map, destination search, Apple Music launch and vehicle tools."><title>FORTE GT — Driver Interface</title>
+<meta name="description" content="Interactive Kia Forte GT-Line web dashboard with GPS speedometer, compass, live map, destination search, Apple Music launch and vehicle tools."><title>FORTE GT — Tesla-Inspired Driver Interface</title>
 <style>
 :root{color-scheme:dark;--bg:#070809;--panel:#111317;--panel-hi:#17191e;--red:#ff343b;--red-dark:#94131b;--white:#f7f7f8;--muted:#969ba5;--line:#282b31}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;width:100%;min-height:100%;background:var(--bg);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;overscroll-behavior:none}
 body{min-height:100dvh;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 button{font:inherit;touch-action:manipulation}
-.app{height:100dvh;max-width:1600px;margin:0 auto;padding:clamp(14px,2vw,28px);display:flex;flex-direction:column;gap:clamp(10px,1.4vh,17px);overflow:hidden}
+.app{position:relative;height:100dvh;max-width:1600px;margin:0 auto;padding:clamp(14px,2vw,28px);display:flex;flex-direction:column;gap:clamp(10px,1.4vh,17px);overflow:hidden}
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;flex:0 0 auto}
 .brand{display:flex;align-items:center;gap:13px;min-width:0}
 .emblem{width:clamp(39px,4.2vw,54px);height:clamp(39px,4.2vw,54px);display:grid;place-items:center;border:1px solid #c92a33;border-radius:15px;background:linear-gradient(145deg,#211014,#0b0c0e);color:var(--red);font-size:21px;font-weight:900;box-shadow:inset 0 0 20px #ff343b10,0 0 24px #ff343b0d}
@@ -67,6 +67,88 @@ button{font:inherit;touch-action:manipulation}
 @media(orientation:portrait){.app{height:auto;min-height:100dvh;overflow:visible}.main{grid-template-columns:1fr;grid-template-rows:minmax(280px,42vh) minmax(300px,42vh) auto}.music{grid-column:1;flex-wrap:wrap}.music-info{min-width:calc(100% - 80px)}.music .action{flex:1}.mapbox{min-height:155px}.vehicle-art{min-height:155px}.footer{padding-bottom:5px}}
 @media (orientation:landscape) and (max-height:560px){.app{padding:10px 18px;gap:8px}.topbar{min-height:40px}.emblem{width:34px;height:34px;border-radius:10px}.brandline{margin-top:3px;font-size:8px}.clock{font-size:29px}.date{margin-top:4px;font-size:8px}.panel{padding:10px 13px;border-radius:15px}.panelhead{margin-bottom:7px;font-size:9px}.buttonrow{margin-top:7px;gap:7px}.action{min-height:34px;padding:7px;font-size:9px;border-radius:10px}.map-chip{top:7px;left:8px;padding:5px 7px}.map-caption{bottom:7px;left:9px;font-size:8px}.vehicle-art{min-height:78px}.car-silhouette{width:min(57%,260px)}.vehicle-status{margin-top:5px;font-size:8px}.gauges{margin-top:5px;gap:6px}.gauge{padding:6px 8px}.gauge-value{margin-top:3px;font-size:16px}.vehicle-buttons{margin-top:6px;gap:6px}.music{padding:8px 12px;gap:10px}.album{width:36px;height:36px;border-radius:10px;font-size:18px}.music-info span{margin-top:3px}.music .action{min-width:88px;font-size:8px;padding:6px}.footer{font-size:8px}}
 @media(prefers-reduced-motion:no-preference){.led{animation:pulse 2.8s ease-in-out infinite}@keyframes pulse{50%{opacity:.55;box-shadow:0 0 4px #ff343b55}}}
+
+/* TESLA-INSPIRED V9 VISUAL PASS */
+:root{--bg:#050607;--panel:#0b0d10;--panel-hi:#111419;--red:#e82127;--red-dark:#85151b;--white:#f4f5f6;--muted:#8d929a;--line:#22262c}
+html,body{background:#050607}
+.app{max-width:1800px;padding:clamp(12px,1.5vw,24px);gap:clamp(8px,1vh,13px)}
+.topbar{padding:0 4px;min-height:58px}
+.emblem{width:42px;height:42px;border-radius:50%;border:1px solid #3b4047;background:#111317;color:#f4f5f6;box-shadow:none;font-size:19px}
+.brandname{font-size:clamp(16px,1.7vw,23px);letter-spacing:.24em;font-weight:700}
+.brandline{color:#9da2aa;font-size:8px;letter-spacing:.22em;font-weight:600}
+.clock{font-size:clamp(25px,3.5vw,40px);font-weight:400;letter-spacing:0}
+.date{font-size:9px;letter-spacing:.1em;color:#8d929a}
+.rule{height:1px;flex-basis:1px;background:#272b31;opacity:1}
+.main{grid-template-columns:minmax(0,1.18fr) minmax(0,.82fr);grid-template-rows:minmax(0,1fr) auto;gap:clamp(8px,1vw,14px)}
+.panel{border-radius:15px;border:1px solid #22262c;background:#0b0d10;box-shadow:none;padding:clamp(12px,1.35vw,19px)}
+.panel:before{display:none}
+.panelhead{font-size:9px;letter-spacing:.17em;color:#b8bdc4;margin-bottom:10px}
+.led{width:5px;height:5px;flex-basis:5px;background:#e82127;box-shadow:0 0 7px #e8212755}
+.number{font-size:8px;color:#646a73}
+.mapbox{border-radius:10px;border:1px solid #20242a;background:#0a0c0f}
+.live-map iframe{filter:grayscale(1) invert(90%) hue-rotate(180deg) brightness(.68) contrast(.88)}
+.map-chip{top:10px;left:10px;border-radius:6px;border:1px solid #2b3037;background:#090a0bdc;color:#c3c7cd;font-size:8px;letter-spacing:.1em}
+.map-caption{font-size:8px;color:#a4aab3}
+.destination-form input{background:#111419;border-color:#272b31;border-radius:8px}
+.action{border-radius:8px;min-height:43px;background:#171a1f;border:1px solid #343940;color:#f2f3f5;box-shadow:none;font-size:10px;font-weight:650;letter-spacing:.04em}
+.action.primary{background:#e82127;border-color:#e82127;box-shadow:none;color:#fff}
+.action:active{transform:scale(.985);filter:brightness(1.15)}
+.vehicle-art{border:1px solid #22262c;border-radius:10px;background:#070809}
+.car-photo{object-position:center 54%;opacity:.96}
+.vehicle-art:before{background:linear-gradient(180deg,#05060700 25%,#0506079c 100%)}
+.vehicle-art:after{background:linear-gradient(90deg,transparent,#e8212745,transparent)}
+.vehicle-label{font-size:8px;letter-spacing:.18em;color:#e6e7e9}
+.vehicle-status{color:#9ba1aa;font-size:8px;letter-spacing:.08em}
+.statusdot{height:5px;width:5px}
+.gauges{gap:8px}
+.gauge{background:#101216;border:1px solid #252930;border-radius:9px;padding:10px 11px}
+.gauge-label{font-size:8px;letter-spacing:.12em;color:#8d929a}
+.gauge-value{font-size:clamp(18px,2.1vw,25px);font-weight:500;letter-spacing:-.02em}
+.unit{font-size:9px;color:#8d929a}
+.music{border-radius:13px;background:#0b0d10;border-color:#22262c;gap:13px;padding:11px 14px}
+.album{width:43px;height:43px;border-radius:9px;background:#171a1f;border:1px solid #30353d;color:#f4f5f6;font-size:22px}
+.music-info strong{font-size:12px;letter-spacing:.12em;font-weight:650}
+.music-info span{font-size:8px;color:#8d929a;letter-spacing:.1em}
+.playlist-tag{border:1px solid #30353d;background:#12151a;color:#cdd0d5!important;border-radius:5px;padding:4px 7px}
+.playlist-tag i{background:#e82127}
+.music .action{min-width:104px}
+.footer{font-size:8px;letter-spacing:.1em;color:#666c75;padding:0 4px}
+.ready{color:#a9aeb6}
+@media (orientation:landscape) and (min-height:561px){.app{padding:clamp(12px,1.3vw,20px) clamp(14px,1.7vw,26px)}.main{grid-template-rows:minmax(0,1fr) auto}.panel{padding:clamp(12px,1.35vw,20px)}}
+@media (orientation:landscape) and (max-height:560px){.app{padding:8px 14px;gap:6px}.topbar{min-height:35px}.emblem{width:31px;height:31px}.brandline{font-size:7px}.clock{font-size:26px}.date{font-size:7px}.panel{padding:9px 11px;border-radius:11px}.panelhead{margin-bottom:6px}.action{min-height:31px;border-radius:7px;font-size:8px}.destination-form{margin-top:5px}.destination-form input{font-size:9px}.map-chip{font-size:7px}.vehicle-status{margin-top:4px}.gauges{margin-top:4px}.gauge{padding:5px 7px}.gauge-value{font-size:15px}.vehicle-buttons{margin-top:5px}.music{padding:7px 10px}.album{width:32px;height:32px;font-size:17px}.music .action{min-width:82px}.footer{font-size:7px}}
+@media(orientation:portrait){.app{padding:12px;gap:9px}.main{grid-template-columns:1fr;grid-template-rows:minmax(270px,40vh) minmax(300px,40vh) auto}.panel{border-radius:12px}.music{grid-column:1}.music .action{flex:1}}
+
+
+/* V10: landscape center-console layout + weather tab */
+.main{grid-template-columns:minmax(250px,.78fr) minmax(230px,.72fr) minmax(360px,1.5fr);grid-template-rows:minmax(0,1fr) auto}
+.main>.panel:first-child{grid-column:3;grid-row:1 / span 2}
+.main>.panel:nth-child(2){grid-column:1;grid-row:1}
+.main>.panel.music{grid-column:1 / 3;grid-row:2}
+.nav-dock{display:flex;align-items:center;justify-content:center;gap:clamp(10px,2vw,26px);padding:8px 12px;border:1px solid #24282e;border-radius:12px;background:#0b0d10;flex:0 0 auto}
+.dock-btn{display:flex;align-items:center;justify-content:center;gap:7px;min-height:34px;padding:7px 12px;border:1px solid transparent;border-radius:8px;background:transparent;color:#b9bec6;font-size:9px;font-weight:700;letter-spacing:.1em;cursor:pointer}
+.dock-btn.active,.dock-btn:focus{background:#202329;color:#fff;border-color:#383d45}
+.dock-icon{font-size:17px;line-height:1}
+.weather-screen{position:absolute;inset:0;z-index:10;background:#080a0d;padding:clamp(14px,2vw,28px);display:none;overflow:auto}
+.weather-screen.open{display:flex;flex-direction:column;gap:16px}
+.weather-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.weather-title{font-size:clamp(18px,2.2vw,28px);font-weight:600;letter-spacing:.04em}
+.weather-sub{color:#9097a1;font-size:10px;letter-spacing:.12em;margin-top:5px}
+.weather-hero{display:grid;grid-template-columns:1.1fr 1fr;gap:14px;flex:1;min-height:0}
+.weather-current,.weather-detail{border:1px solid #252a31;border-radius:14px;background:linear-gradient(145deg,#111419,#090b0e);padding:clamp(15px,2vw,26px)}
+.weather-current{display:flex;flex-direction:column;justify-content:space-between}
+.weather-temp{font-size:clamp(54px,9vw,100px);font-weight:250;letter-spacing:-.07em;line-height:1}
+.weather-place{font-size:clamp(13px,1.5vw,18px);font-weight:600}
+.weather-condition{color:#aeb4bd;font-size:12px;margin-top:7px}
+.weather-icon{font-size:clamp(35px,5vw,60px)}
+.weather-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.weather-stat{background:#0a0c0f;border:1px solid #252a31;border-radius:10px;padding:13px}
+.weather-stat label{display:block;color:#858c96;font-size:9px;letter-spacing:.12em}
+.weather-stat strong{display:block;font-size:clamp(16px,2vw,24px);margin-top:8px;font-weight:500}
+.weather-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#7f8791;font-size:9px;letter-spacing:.08em}
+.weather-error{color:#ff9a9e;font-size:11px}
+@media(max-width:900px){.main{grid-template-columns:1fr 1fr;grid-template-rows:minmax(0,1fr) auto}.main>.panel:first-child{grid-column:1 / -1;grid-row:1;min-height:260px}.main>.panel:nth-child(2){grid-column:1;grid-row:2}.main>.panel.music{grid-column:2;grid-row:2;flex-wrap:wrap}.nav-dock{gap:4px}.dock-btn{padding:7px 8px;font-size:8px}}
+@media(orientation:portrait){.main{grid-template-columns:1fr;grid-template-rows:minmax(270px,40vh) minmax(300px,40vh) auto}.main>.panel:first-child{grid-column:1;grid-row:1}.main>.panel:nth-child(2){grid-column:1;grid-row:2}.main>.panel.music{grid-column:1;grid-row:3}.nav-dock{position:sticky;bottom:4px;z-index:12;justify-content:space-around}.weather-hero{grid-template-columns:1fr}.weather-temp{font-size:64px}}
+
 </style>
 </head>
 <body>
@@ -118,6 +200,37 @@ button{font:inherit;touch-action:manipulation}
       <button class="action" id="kiaAccess"><span class="arrow">↗</span> KIA ACCESS</button><button class="action primary" id="openMusic"><span class="arrow">▶</span> PLAY DRIVING</button>
     </section>
   </main>
+
+  <nav class="nav-dock" aria-label="Dashboard tabs">
+    <button class="dock-btn active" id="homeTab"><span class="dock-icon">▦</span> HOME</button>
+    <button class="dock-btn" id="weatherTab"><span class="dock-icon">☀</span> WEATHER</button>
+    <button class="dock-btn" id="mapTab"><span class="dock-icon">⌖</span> MAP</button>
+    <button class="dock-btn" id="musicTab"><span class="dock-icon">♫</span> MUSIC</button>
+  </nav>
+  <section class="weather-screen" id="weatherScreen" aria-label="Weather dashboard">
+    <div class="weather-head">
+      <div><div class="weather-title">WEATHER</div><div class="weather-sub" id="weatherPlace">LOCAL CONDITIONS · GPS LOCATION</div></div>
+      <button class="action" id="weatherRefresh">↻ REFRESH</button>
+    </div>
+    <div class="weather-hero">
+      <div class="weather-current">
+        <div><div class="weather-icon" id="weatherIcon">☀</div><div class="weather-temp" id="weatherTemp">—°</div><div class="weather-place" id="weatherCondition">Waiting for weather</div><div class="weather-condition" id="weatherFeels">Feels like —°</div></div>
+        <div class="weather-foot"><span id="weatherUpdated">LIVE WEATHER · OPEN-METEO</span><span id="weatherCode">—</span></div>
+      </div>
+      <div class="weather-detail">
+        <div class="panelhead"><span class="paneltitle"><i class="led"></i> CURRENT CONDITIONS</span><span class="number">LIVE</span></div>
+        <div class="weather-stats">
+          <div class="weather-stat"><label>WIND</label><strong id="weatherWind">—</strong></div>
+          <div class="weather-stat"><label>HUMIDITY</label><strong id="weatherHumidity">—</strong></div>
+          <div class="weather-stat"><label>PRECIPITATION</label><strong id="weatherRain">—</strong></div>
+          <div class="weather-stat"><label>UV INDEX</label><strong id="weatherUV">—</strong></div>
+        </div>
+        <div class="weather-condition" id="weatherMessage" style="margin-top:16px">Enable GPS to load local weather, or use the refresh button.</div>
+      </div>
+    </div>
+    <div class="weather-foot"><span>WEATHER DATA BY OPEN-METEO</span><button class="action" id="weatherBack">← BACK TO DASHBOARD</button></div>
+  </section>
+
   <footer class="footer">
     <div class="footerleft"><i class="led"></i><span class="ready">SYSTEM READY</span><span>· LOCAL DASHBOARD</span></div>
     <span>DRIVE FOCUSED. ARRIVE SAFE.</span>
@@ -173,6 +286,50 @@ document.getElementById('enableGPS').addEventListener('click',()=>{
 });
 document.getElementById('kiaAccess').addEventListener('click',()=>location.href='https://apps.apple.com/us/app/kia-access/id1280548773');
 document.getElementById('vehicleInfo').addEventListener('click',()=>alert('ENGINE DATA CONNECTION\n\nLive GPS speed and the interactive map work in this website after location permission is granted. Engine RPM, coolant temperature and fault codes require an OBD-II adapter plus a compatible app. Standard iPad Safari cannot connect directly to the adapter through this static GitHub Pages website. Open Car Scanner to view those readings. Never use this dashboard instead of the factory instrument cluster.')); 
+
+// Weather tab: live current conditions from Open-Meteo; uses GPS when permitted.
+const weatherScreen=document.getElementById('weatherScreen');
+const dockButtons=[document.getElementById('homeTab'),document.getElementById('weatherTab'),document.getElementById('mapTab'),document.getElementById('musicTab')];
+function setTab(which){
+  weatherScreen.classList.toggle('open',which==='weather');
+  dockButtons.forEach((b,i)=>b.classList.toggle('active',['home','weather','map','music'][i]===which));
+  if(which==='map'){document.querySelector('.main>.panel:first-child').scrollIntoView({behavior:'smooth',block:'nearest'});}
+  if(which==='music'){document.querySelector('.music').scrollIntoView({behavior:'smooth',block:'nearest'});}
+  if(which==='weather' && lastCoords) loadWeather(lastCoords.lat,lastCoords.lon);
+}
+document.getElementById('homeTab').addEventListener('click',()=>setTab('home'));
+document.getElementById('weatherTab').addEventListener('click',()=>setTab('weather'));
+document.getElementById('mapTab').addEventListener('click',()=>setTab('map'));
+document.getElementById('musicTab').addEventListener('click',()=>{setTab('music');window.open('https://music.apple.com/','_blank','noopener');});
+document.getElementById('weatherBack').addEventListener('click',()=>setTab('home'));
+document.getElementById('weatherRefresh').addEventListener('click',()=>{
+  if(lastCoords) loadWeather(lastCoords.lat,lastCoords.lon);
+  else if(navigator.geolocation) navigator.geolocation.getCurrentPosition(p=>{lastCoords={lat:p.coords.latitude,lon:p.coords.longitude};loadWeather(lastCoords.lat,lastCoords.lon);},()=>{document.getElementById('weatherMessage').textContent='Location permission is needed for local weather. Enable GPS first.';},{enableHighAccuracy:true,timeout:12000});
+});
+function weatherDescription(code){
+ if(code===0)return ['Clear sky','☀'];if([1,2].includes(code))return ['Mostly clear / partly cloudy','🌤'];if(code===3)return ['Overcast','☁'];if([45,48].includes(code))return ['Fog','🌫'];if([51,53,55,56,57].includes(code))return ['Drizzle','🌦'];if([61,63,65,66,67,80,81,82].includes(code))return ['Rain','🌧'];if([71,73,75,77,85,86].includes(code))return ['Snow','❄'];if([95,96,99].includes(code))return ['Thunderstorm','⛈'];return ['Current conditions','🌡'];
+}
+async function loadWeather(lat,lon){
+ const msg=document.getElementById('weatherMessage');msg.textContent='Loading local weather…';
+ try{
+  const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m&hourly=uv_index&forecast_days=1&timezone=auto`;
+  const response=await fetch(url);if(!response.ok)throw new Error('Weather service unavailable');const data=await response.json();const c=data.current;
+  const desc=weatherDescription(c.weather_code);
+  document.getElementById('weatherTemp').textContent=Math.round(c.temperature_2m)+'°';
+  document.getElementById('weatherCondition').textContent=desc[0];
+  document.getElementById('weatherIcon').textContent=desc[1];
+  document.getElementById('weatherFeels').textContent='Feels like '+Math.round(c.apparent_temperature)+'°';
+  document.getElementById('weatherWind').textContent=Math.round(c.wind_speed_10m)+' km/h';
+  document.getElementById('weatherHumidity').textContent=Math.round(c.relative_humidity_2m)+'%';
+  document.getElementById('weatherRain').textContent=Number(c.precipitation).toFixed(1)+' mm';
+  const hour=new Date(c.time).getHours();const uv=data.hourly?.uv_index;document.getElementById('weatherUV').textContent=uv&&uv[hour]!=null?Number(uv[hour]).toFixed(1):'—';
+  document.getElementById('weatherPlace').textContent=`LOCAL CONDITIONS · ${lat.toFixed(2)}°, ${lon.toFixed(2)}°`;
+  document.getElementById('weatherUpdated').textContent='UPDATED '+new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});
+  document.getElementById('weatherCode').textContent='CODE '+c.weather_code;
+  msg.textContent='Live conditions loaded from your current GPS coordinates.';
+ }catch(e){msg.textContent='Weather unavailable. Check internet access and tap refresh to try again.';}
+}
+
 </script>
 </body>
 </html>
