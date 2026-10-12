@@ -8,7 +8,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="FORTE GT">
-<meta name="description" content="Black-and-red single-screen Kia Forte GT-Line dashboard with navigation, music, vehicle data placeholder and Kia Access shortcut."><title>FORTE GT — Driver Interface</title>
+<meta name="description" content="Black-and-red single-screen Kia Forte GT-Line dashboard with navigation, pinned Driving playlist shortcut, vehicle data placeholder and Kia Access shortcut."><title>FORTE GT — Driver Interface</title>
 <style>
 :root{color-scheme:dark;--bg:#070809;--panel:#111317;--panel-hi:#17191e;--red:#ff343b;--red-dark:#94131b;--white:#f7f7f8;--muted:#969ba5;--line:#282b31}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -53,7 +53,7 @@ button{font:inherit;touch-action:manipulation}
 .vehicle-buttons{display:grid;grid-template-columns:1.2fr .8fr;gap:9px;margin-top:10px}
 .music{grid-column:1/-1;display:flex;flex-direction:row;align-items:center;gap:15px;padding:clamp(12px,1.6vw,20px)}
 .album{width:clamp(43px,5vw,59px);height:clamp(43px,5vw,59px);flex:0 0 auto;border:1px solid #5a252d;border-radius:15px;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,#41131a,#171014 72%);color:var(--red);font-size:25px}
-.music-info{flex:1;min-width:0}.music-info strong{display:block;font-size:clamp(12px,1.3vw,16px);letter-spacing:.07em}.music-info span{display:block;color:var(--muted);font-size:9px;letter-spacing:.13em;margin-top:6px}
+.music-info{flex:1;min-width:0}.music-info strong{display:block;font-size:clamp(12px,1.3vw,16px);letter-spacing:.07em}.music-info span{display:block;color:var(--muted);font-size:9px;letter-spacing:.13em;margin-top:6px}.playlist-tag{display:inline-flex!important;align-items:center;gap:6px;color:#ff858a!important;border:1px solid #61232a;background:#241014;padding:5px 8px;border-radius:7px;margin-top:7px!important;font-size:8px!important;letter-spacing:.16em!important}.playlist-tag i{width:5px;height:5px;border-radius:50%;background:var(--red);display:inline-block}
 .music .action{min-width:112px}.music{gap:10px}.music-info{min-width:120px}.music .action{font-size:10px;padding:9px 10px}
 .footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex:0 0 auto;color:#777d87;font-size:9px;letter-spacing:.12em}
 .footerleft{display:flex;align-items:center;gap:8px}.footerleft .led{width:6px;height:6px;flex-basis:6px}.ready{color:#e0a0a3}
@@ -103,8 +103,8 @@ button{font:inherit;touch-action:manipulation}
     </section>
     <section class="panel music">
       <div class="album">♫</div>
-      <div class="music-info"><strong>APPLE MUSIC</strong><span>YOUR SOUNDTRACK · READY WHEN YOU ARE</span></div>
-      <button class="action" id="kiaAccess"><span class="arrow">↗</span> KIA ACCESS</button><button class="action primary" id="openMusic"><span class="arrow">▶</span> OPEN MUSIC</button>
+      <div class="music-info"><strong>APPLE MUSIC</strong><span>YOUR SOUNDTRACK · READY WHEN YOU ARE</span><span class="playlist-tag"><i></i> PINNED PLAYLIST · DRIVING</span></div>
+      <button class="action" id="kiaAccess"><span class="arrow">↗</span> KIA ACCESS</button><button class="action primary" id="openMusic"><span class="arrow">▶</span> PLAY DRIVING</button>
     </section>
   </main>
   <footer class="footer">
@@ -118,7 +118,10 @@ function updateClock(){const now=new Date();clock.textContent=now.toLocaleTimeSt
 updateClock();setInterval(updateClock,1000);
 document.getElementById('appleMaps').addEventListener('click',()=>location.href='https://maps.apple.com/');
 document.getElementById('googleMaps').addEventListener('click',()=>location.href='https://maps.google.com/');
-document.getElementById('openMusic').addEventListener('click',()=>location.href='music://');
+document.getElementById('openMusic').addEventListener('click',()=>{
+  // iOS can launch Apple Music, but a specific playlist requires its Apple Music share URL.
+  location.href='music://';
+});
 document.getElementById('carScanner').addEventListener('click',()=>location.href='https://apps.apple.com/us/app/car-scanner-elm-obd2/id1259933623');
 document.getElementById('kiaAccess').addEventListener('click',()=>location.href='https://apps.apple.com/us/app/kia-access/id1280548773');
 document.getElementById('vehicleInfo').addEventListener('click',()=>alert('Live vehicle readings require a compatible OBD-II adapter and a supported connection in Car Scanner. This dashboard does not control the vehicle. Keep the factory display and instrument cluster available.'));
