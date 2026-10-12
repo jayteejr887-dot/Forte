@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#070809">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FORTE GT">
+<meta name="description" content="Black-and-red single-screen Kia Forte GT-Line dashboard with navigation, music, vehicle data placeholder and Kia Access shortcut."><title>FORTE GT — Driver Interface</title>
+<style>
+:root{color-scheme:dark;--bg:#070809;--panel:#111317;--panel-hi:#17191e;--red:#ff343b;--red-dark:#94131b;--white:#f7f7f8;--muted:#969ba5;--line:#282b31}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;min-height:100%;background:var(--bg);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;overscroll-behavior:none}
+body{min-height:100dvh;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+button{font:inherit;touch-action:manipulation}
+.app{height:100dvh;max-width:1600px;margin:0 auto;padding:clamp(14px,2vw,28px);display:flex;flex-direction:column;gap:clamp(10px,1.4vh,17px);overflow:hidden}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;flex:0 0 auto}
+.brand{display:flex;align-items:center;gap:13px;min-width:0}
+.emblem{width:clamp(39px,4.2vw,54px);height:clamp(39px,4.2vw,54px);display:grid;place-items:center;border:1px solid #c92a33;border-radius:15px;background:linear-gradient(145deg,#211014,#0b0c0e);color:var(--red);font-size:21px;font-weight:900;box-shadow:inset 0 0 20px #ff343b10,0 0 24px #ff343b0d}
+.brandname{font-size:clamp(17px,2.1vw,27px);font-weight:850;letter-spacing:.19em;white-space:nowrap}
+.brandline{margin-top:5px;color:var(--red);font-size:9px;letter-spacing:.2em;font-weight:700}
+.clockbox{text-align:right;flex:0 0 auto}.clock{font-size:clamp(28px,4.3vw,48px);font-weight:300;letter-spacing:.025em;line-height:1;font-variant-numeric:tabular-nums}.date{margin-top:7px;color:var(--muted);font-size:10px;letter-spacing:.16em}
+.rule{height:2px;flex:0 0 2px;background:linear-gradient(90deg,var(--red) 0%,#772128 20%,#282b31 60%,#282b31 100%);opacity:.9}
+.main{flex:1;min-height:0;display:grid;grid-template-columns:1.08fr .92fr;grid-template-rows:minmax(0,1fr) auto;gap:clamp(10px,1.35vw,17px)}
+.panel{min-width:0;min-height:0;position:relative;display:flex;flex-direction:column;padding:clamp(13px,1.7vw,23px);border-radius:22px;border:1px solid var(--line);background:linear-gradient(150deg,#17191e 0%,#101114 68%,#0d0e10 100%);box-shadow:0 12px 34px #00000022;overflow:hidden}
+.panel:before{content:"";position:absolute;top:0;left:22px;right:22px;height:1px;background:linear-gradient(90deg,transparent,#ffffff17,transparent)}
+.panelhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:clamp(10px,1.2vh,15px);font-size:10px;font-weight:800;letter-spacing:.2em;color:#e7e8eb;flex:0 0 auto}
+.paneltitle{display:flex;align-items:center;gap:9px}.led{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:var(--red);box-shadow:0 0 12px #ff343b99}.number{color:#777d87;font-variant-numeric:tabular-nums}
+.mapbox{flex:1;min-height:100px;position:relative;overflow:hidden;border-radius:16px;border:1px solid #292d35;background:radial-gradient(ellipse at 48% 45%,#20242b 0%,#12151a 59%,#0b0d10 100%)}
+.mapgrid{position:absolute;inset:-30%;opacity:.35;background-image:linear-gradient(28deg,transparent 47%,#414752 48%,#414752 49%,transparent 50%),linear-gradient(112deg,transparent 45%,#343a44 46%,#343a44 47%,transparent 48%),linear-gradient(0deg,transparent 48%,#242a32 49%,#242a32 50%,transparent 51%);background-size:145px 110px,170px 145px,85px 76px;transform:rotate(-8deg)}
+.road{position:absolute;width:160%;height:8px;left:-25%;top:47%;background:#414752;border:1px solid #5a606b;transform:rotate(-24deg);box-shadow:0 0 0 3px #101216}
+.road2{position:absolute;width:160%;height:5px;left:-20%;top:59%;background:#343a44;transform:rotate(29deg)}
+.road3{position:absolute;width:7px;height:160%;left:59%;top:-25%;background:#343a44;transform:rotate(45deg)}
+.map-pin{position:absolute;left:50%;top:47%;width:17px;height:17px;border:4px solid #ffe1e2;background:var(--red);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 9px #ff343b20,0 0 23px #ff343b99}
+.map-chip{position:absolute;top:12px;left:12px;padding:7px 9px;border:1px solid #3a3d44;background:#0c0e11d9;border-radius:8px;font-size:9px;letter-spacing:.13em;color:#c7cbd2}
+.map-caption{position:absolute;bottom:12px;left:13px;right:13px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:9px;letter-spacing:.13em;color:#aeb4be}
+.buttonrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;flex:0 0 auto}
+.action{min-width:0;min-height:clamp(43px,5.6vh,58px);border-radius:13px;border:1px solid #3a3d44;background:linear-gradient(180deg,#24272d,#191b20);color:#f2f3f5;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;font-size:clamp(10px,.9vw,12px);font-weight:800;letter-spacing:.06em;box-shadow:inset 0 1px #ffffff08;cursor:pointer}
+.action.primary{border-color:#e63a42;background:linear-gradient(135deg,#e82a35 0%,#a7101c 100%);box-shadow:0 5px 17px #ff343b19,inset 0 1px #ffffff24}
+.action:active{transform:scale(.985);filter:brightness(1.12)}
+.action .arrow{font-size:16px;line-height:1}
+.vehicle-art{flex:1;min-height:100px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border-radius:16px;border:1px solid #34262b;background:#0c0d10}.car-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 55%;opacity:.94}.vehicle-art:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,#08090b05 30%,#08090b85 100%)}
+.vehicle-art:after{content:"";position:absolute;bottom:16%;left:16%;right:16%;height:1px;background:linear-gradient(90deg,transparent,#ff343b55,transparent)}
+.car-silhouette{width:min(72%,340px);height:auto;position:relative;z-index:1;filter:drop-shadow(0 6px 12px #ff343b12)}
+.vehicle-label{position:absolute;z-index:2;left:13px;right:13px;bottom:12px;text-align:center;font-size:9px;letter-spacing:.2em;color:#ff7278}
+.vehicle-status{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:10px;color:#c2a6a9;font-size:9px;letter-spacing:.1em;flex:0 0 auto}
+.statusdot{height:6px;width:6px;border-radius:50%;background:#ffb13b;box-shadow:0 0 8px #ffb13b55}
+.gauges{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px;flex:0 0 auto}
+.gauge{background:#0b0d10;border:1px solid #282b31;border-radius:12px;padding:10px 12px}
+.gauge-label{color:#9298a2;font-size:9px;letter-spacing:.14em}.gauge-value{font-size:clamp(17px,2vw,23px);font-weight:650;margin-top:6px;font-variant-numeric:tabular-nums}.unit{font-size:10px;color:#9298a2;font-weight:500}
+.vehicle-buttons{display:grid;grid-template-columns:1.2fr .8fr;gap:9px;margin-top:10px}
+.music{grid-column:1/-1;display:flex;flex-direction:row;align-items:center;gap:15px;padding:clamp(12px,1.6vw,20px)}
+.album{width:clamp(43px,5vw,59px);height:clamp(43px,5vw,59px);flex:0 0 auto;border:1px solid #5a252d;border-radius:15px;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,#41131a,#171014 72%);color:var(--red);font-size:25px}
+.music-info{flex:1;min-width:0}.music-info strong{display:block;font-size:clamp(12px,1.3vw,16px);letter-spacing:.07em}.music-info span{display:block;color:var(--muted);font-size:9px;letter-spacing:.13em;margin-top:6px}
+.music .action{min-width:112px}.music{gap:10px}.music-info{min-width:120px}.music .action{font-size:10px;padding:9px 10px}
+.footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex:0 0 auto;color:#777d87;font-size:9px;letter-spacing:.12em}
+.footerleft{display:flex;align-items:center;gap:8px}.footerleft .led{width:6px;height:6px;flex-basis:6px}.ready{color:#e0a0a3}
+@media(orientation:portrait){.app{height:auto;min-height:100dvh;overflow:visible}.main{grid-template-columns:1fr;grid-template-rows:minmax(280px,42vh) minmax(300px,42vh) auto}.music{grid-column:1;flex-wrap:wrap}.music-info{min-width:calc(100% - 80px)}.music .action{flex:1}.mapbox{min-height:155px}.vehicle-art{min-height:155px}.footer{padding-bottom:5px}}
+@media (orientation:landscape) and (max-height:560px){.app{padding:10px 18px;gap:8px}.topbar{min-height:40px}.emblem{width:34px;height:34px;border-radius:10px}.brandline{margin-top:3px;font-size:8px}.clock{font-size:29px}.date{margin-top:4px;font-size:8px}.panel{padding:10px 13px;border-radius:15px}.panelhead{margin-bottom:7px;font-size:9px}.buttonrow{margin-top:7px;gap:7px}.action{min-height:34px;padding:7px;font-size:9px;border-radius:10px}.map-chip{top:7px;left:8px;padding:5px 7px}.map-caption{bottom:7px;left:9px;font-size:8px}.vehicle-art{min-height:78px}.car-silhouette{width:min(57%,260px)}.vehicle-status{margin-top:5px;font-size:8px}.gauges{margin-top:5px;gap:6px}.gauge{padding:6px 8px}.gauge-value{margin-top:3px;font-size:16px}.vehicle-buttons{margin-top:6px;gap:6px}.music{padding:8px 12px;gap:10px}.album{width:36px;height:36px;border-radius:10px;font-size:18px}.music-info span{margin-top:3px}.music .action{min-width:88px;font-size:8px;padding:6px}.footer{font-size:8px}}
+@media(prefers-reduced-motion:no-preference){.led{animation:pulse 2.8s ease-in-out infinite}@keyframes pulse{50%{opacity:.55;box-shadow:0 0 4px #ff343b55}}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="emblem">F</div>
+      <div><div class="brandname">FORTE GT</div><div class="brandline">GT-LINE / DRIVER INTERFACE</div></div>
+    </div>
+    <div class="clockbox"><div class="clock" id="clock">--:--</div><div class="date" id="date">LOADING DATE</div></div>
+  </header>
+  <div class="rule"></div>
+  <main class="main">
+    <section class="panel">
+      <div class="panelhead"><span class="paneltitle"><i class="led"></i>NAVIGATION</span><span class="number">01 / ROUTE</span></div>
+      <div class="mapbox" aria-label="Decorative route illustration; tap a navigation button to open a real map">
+        <div class="mapgrid"></div><div class="road"></div><div class="road2"></div><div class="road3"></div><div class="map-pin"></div>
+        <div class="map-chip">NAVIGATION STANDBY</div>
+        <div class="map-caption"><span>MAP PREVIEW</span><span>OPEN MAPS FOR LIVE ROUTING ↗</span></div>
+      </div>
+      <div class="buttonrow">
+        <button class="action primary" id="appleMaps"><span class="arrow">↗</span> APPLE MAPS</button>
+        <button class="action" id="googleMaps"><span class="arrow">⌖</span> GOOGLE MAPS</button>
+      </div>
+    </section>
+    <section class="panel">
+      <div class="panelhead"><span class="paneltitle"><i class="led"></i>VEHICLE SYSTEMS</span><span class="number">02 / STATUS</span></div>
+      <div class="vehicle-art">
+        <img class="car-photo" src="forte_gt_black_kia_illustration.jpg" alt="Black 2022 Kia Forte GT-Line illustration">
+        <div class="vehicle-label">2022 KIA FORTE GT-LINE</div>
+      </div>
+      <div class="vehicle-status"><i class="statusdot"></i><span>OBD ADAPTER NOT CONNECTED · DEMO VALUES ONLY</span></div>
+      <div class="gauges">
+        <div class="gauge"><div class="gauge-label">ENGINE RPM</div><div class="gauge-value">— <span class="unit">rpm</span></div></div>
+        <div class="gauge"><div class="gauge-label">COOLANT TEMP</div><div class="gauge-value">— <span class="unit">°F</span></div></div>
+      </div>
+      <div class="vehicle-buttons">
+        <button class="action primary" id="carScanner"><span class="arrow">↗</span> CAR SCANNER</button>
+        <button class="action" id="vehicleInfo">VEHICLE INFO</button>
+      </div>
+    </section>
+    <section class="panel music">
+      <div class="album">♫</div>
+      <div class="music-info"><strong>APPLE MUSIC</strong><span>YOUR SOUNDTRACK · READY WHEN YOU ARE</span></div>
+      <button class="action" id="kiaAccess"><span class="arrow">↗</span> KIA ACCESS</button><button class="action primary" id="openMusic"><span class="arrow">▶</span> OPEN MUSIC</button>
+    </section>
+  </main>
+  <footer class="footer">
+    <div class="footerleft"><i class="led"></i><span class="ready">SYSTEM READY</span><span>· LOCAL DASHBOARD</span></div>
+    <span>DRIVE FOCUSED. ARRIVE SAFE.</span>
+  </footer>
+</div>
+<script>
+const clock=document.getElementById('clock'),date=document.getElementById('date');
+function updateClock(){const now=new Date();clock.textContent=now.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});date.textContent=now.toLocaleDateString([], {weekday:'short',month:'short',day:'numeric'}).toUpperCase();}
+updateClock();setInterval(updateClock,1000);
+document.getElementById('appleMaps').addEventListener('click',()=>location.href='https://maps.apple.com/');
+document.getElementById('googleMaps').addEventListener('click',()=>location.href='https://maps.google.com/');
+document.getElementById('openMusic').addEventListener('click',()=>location.href='music://');
+document.getElementById('carScanner').addEventListener('click',()=>location.href='https://apps.apple.com/us/app/car-scanner-elm-obd2/id1259933623');
+document.getElementById('kiaAccess').addEventListener('click',()=>location.href='https://apps.apple.com/us/app/kia-access/id1280548773');
+document.getElementById('vehicleInfo').addEventListener('click',()=>alert('Live vehicle readings require a compatible OBD-II adapter and a supported connection in Car Scanner. This dashboard does not control the vehicle. Keep the factory display and instrument cluster available.'));
+</script>
+</body>
+</html>
