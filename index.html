@@ -8,7 +8,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="FORTE GT">
-<meta name="description" content="Black-and-red single-screen Kia Forte GT-Line dashboard with GPS speedometer, compass, navigation, pinned Driving playlist, OBD-II setup and Kia Access shortcut."><title>FORTE GT — Driver Interface</title>
+<meta name="description" content="Interactive Kia Forte GT-Line web dashboard with GPS speedometer, compass, live map, destination search, Apple Music launch and vehicle tools."><title>FORTE GT — Driver Interface</title>
 <style>
 :root{color-scheme:dark;--bg:#070809;--panel:#111317;--panel-hi:#17191e;--red:#ff343b;--red-dark:#94131b;--white:#f7f7f8;--muted:#969ba5;--line:#282b31}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -55,6 +55,13 @@ button{font:inherit;touch-action:manipulation}
 .album{width:clamp(43px,5vw,59px);height:clamp(43px,5vw,59px);flex:0 0 auto;border:1px solid #5a252d;border-radius:15px;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,#41131a,#171014 72%);color:var(--red);font-size:25px}
 .music-info{flex:1;min-width:0}.music-info strong{display:block;font-size:clamp(12px,1.3vw,16px);letter-spacing:.07em}.music-info span{display:block;color:var(--muted);font-size:9px;letter-spacing:.13em;margin-top:6px}.playlist-tag{display:inline-flex!important;align-items:center;gap:6px;color:#ff858a!important;border:1px solid #61232a;background:#241014;padding:5px 8px;border-radius:7px;margin-top:7px!important;font-size:8px!important;letter-spacing:.16em!important}.playlist-tag i{width:5px;height:5px;border-radius:50%;background:var(--red);display:inline-block}
 .music .action{min-width:112px}.music{gap:10px}.music-info{min-width:120px}.music .action{font-size:10px;padding:9px 10px}
+
+.live-map iframe{position:absolute;inset:0;width:100%;height:100%;border:0;filter:invert(90%) hue-rotate(180deg) brightness(.78) contrast(.9)}
+.destination-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:9px;flex:0 0 auto}
+.destination-form input{min-width:0;width:100%;border:1px solid #373b43;border-radius:11px;background:#0b0d10;color:#fff;padding:0 12px;font:inherit;font-size:12px;outline:none}
+.destination-form input:focus{border-color:var(--red)}.destination-form .action{min-height:39px;padding:8px 14px}
+@media (orientation:landscape) and (max-height:560px){.destination-form{margin-top:5px;gap:6px}.destination-form input{font-size:10px;padding:0 8px}.destination-form .action{min-height:30px;padding:5px 9px}}
+
 .footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex:0 0 auto;color:#777d87;font-size:9px;letter-spacing:.12em}
 .footerleft{display:flex;align-items:center;gap:8px}.footerleft .led{width:6px;height:6px;flex-basis:6px}.ready{color:#e0a0a3}
 @media(orientation:portrait){.app{height:auto;min-height:100dvh;overflow:visible}.main{grid-template-columns:1fr;grid-template-rows:minmax(280px,42vh) minmax(300px,42vh) auto}.music{grid-column:1;flex-wrap:wrap}.music-info{min-width:calc(100% - 80px)}.music .action{flex:1}.mapbox{min-height:155px}.vehicle-art{min-height:155px}.footer{padding-bottom:5px}}
@@ -75,14 +82,17 @@ button{font:inherit;touch-action:manipulation}
   <main class="main">
     <section class="panel">
       <div class="panelhead"><span class="paneltitle"><i class="led"></i>NAVIGATION</span><span class="number">01 / ROUTE</span></div>
-      <div class="mapbox" aria-label="Decorative route illustration; tap a navigation button to open a real map">
-        <div class="mapgrid"></div><div class="road"></div><div class="road2"></div><div class="road3"></div><div class="map-pin"></div>
-        <div class="map-chip">NAVIGATION STANDBY</div>
-        <div class="map-caption"><span>MAP PREVIEW</span><span>OPEN MAPS FOR LIVE ROUTING ↗</span></div>
+      <div class="mapbox live-map" aria-label="Interactive OpenStreetMap">
+        <iframe id="liveMap" title="Interactive map" loading="lazy" referrerpolicy="no-referrer" src="https://www.openstreetmap.org/export/embed.html?bbox=-115.25%2C36.05%2C-115.05%2C36.25&amp;layer=mapnik" allowfullscreen></iframe>
+        <div class="map-chip" id="mapStatus">MAP READY · SEARCH BELOW</div>
       </div>
+      <form class="destination-form" id="destinationForm">
+        <input id="destination" aria-label="Destination" placeholder="Enter destination or address" autocomplete="street-address">
+        <button class="action primary" type="submit">SEARCH</button>
+      </form>
       <div class="buttonrow">
-        <button class="action primary" id="appleMaps"><span class="arrow">↗</span> APPLE MAPS</button>
-        <button class="action" id="googleMaps"><span class="arrow">⌖</span> GOOGLE MAPS</button>
+        <button class="action" id="myLocation"><span class="arrow">⌖</span> MY LOCATION</button>
+        <button class="action" id="googleMaps"><span class="arrow">↗</span> GOOGLE MAPS ROUTE</button>
       </div>
     </section>
     <section class="panel">
@@ -117,11 +127,18 @@ button{font:inherit;touch-action:manipulation}
 const clock=document.getElementById('clock'),date=document.getElementById('date');
 function updateClock(){const now=new Date();clock.textContent=now.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});date.textContent=now.toLocaleDateString([], {weekday:'short',month:'short',day:'numeric'}).toUpperCase();}
 updateClock();setInterval(updateClock,1000);
-document.getElementById('appleMaps').addEventListener('click',()=>location.href='https://maps.apple.com/');
-document.getElementById('googleMaps').addEventListener('click',()=>location.href='https://maps.google.com/');
+const destinationInput=document.getElementById('destination');
+const mapFrame=document.getElementById('liveMap');
+const mapStatus=document.getElementById('mapStatus');
+let lastCoords=null, lastDestination='';
+function mapAt(lat,lon,zoom=15){const d=0.035*(16/zoom);mapFrame.src=`https://www.openstreetmap.org/export/embed.html?bbox=${lon-d}%2C${lat-d}%2C${lon+d}%2C${lat+d}&layer=mapnik&marker=${lat}%2C${lon}`;}
+function mapsUrl(provider){const q=destinationInput.value.trim();if(provider==='apple')return q?`https://maps.apple.com/?daddr=${encodeURIComponent(q)}`:(lastCoords?`https://maps.apple.com/?ll=${lastCoords.lat},${lastCoords.lon}`:'https://maps.apple.com/');return q?`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(q)}`:(lastCoords?`https://www.google.com/maps/@${lastCoords.lat},${lastCoords.lon},15z`:'https://maps.google.com/');}
+document.getElementById('googleMaps').addEventListener('click',()=>window.open(mapsUrl('google'),'_blank','noopener'));
+document.getElementById('destinationForm').addEventListener('submit',async e=>{e.preventDefault();const q=destinationInput.value.trim();if(!q){mapStatus.textContent='ENTER A DESTINATION FIRST';destinationInput.focus();return;}mapStatus.textContent='SEARCHING MAP…';try{const url='https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q='+encodeURIComponent(q);const r=await fetch(url,{headers:{'Accept':'application/json'}});if(!r.ok)throw new Error('search failed');const results=await r.json();if(!results.length){mapStatus.textContent='NO RESULT · TRY A FULLER ADDRESS';return;}const p=results[0];const lat=Number(p.lat),lon=Number(p.lon);mapAt(lat,lon,14);lastDestination=q;mapStatus.textContent='DESTINATION FOUND · '+(p.display_name||q).split(',').slice(0,2).join(',').toUpperCase();}catch(err){mapStatus.textContent='MAP SEARCH UNAVAILABLE · USE GOOGLE MAPS ROUTE';}});
+document.getElementById('myLocation').addEventListener('click',()=>{if(!lastCoords){mapStatus.textContent='TAP ENABLE GPS IN VEHICLE SYSTEMS FIRST';return;}mapAt(lastCoords.lat,lastCoords.lon,16);mapStatus.textContent='YOUR CURRENT LOCATION · GPS';});
 document.getElementById('openMusic').addEventListener('click',()=>{
   // iOS can launch Apple Music, but a specific playlist requires its Apple Music share URL.
-  location.href='music://';
+  window.open('https://music.apple.com/','_blank','noopener');
 });
 document.getElementById('carScanner').addEventListener('click',()=>location.href='https://apps.apple.com/us/app/car-scanner-elm-obd2/id1259933623');
 const gpsSpeed=document.getElementById('gpsSpeed'),gpsStatus=document.getElementById('gpsStatus'),gpsDot=document.getElementById('gpsDot');
@@ -138,10 +155,12 @@ function enableHeading(){
 document.getElementById('enableGPS').addEventListener('click',()=>{
  if(!('geolocation' in navigator)){setGpsStatus('GPS NOT AVAILABLE · CHECK IPAD SETTINGS');return;}
  if(!window.isSecureContext){setGpsStatus('GPS NEEDS HTTPS · OPEN GITHUB PAGES');return;}
- setGpsStatus('REQUESTING LOCATION PERMISSION…');enableHeading();
+ setGpsStatus('REQUESTING LOCATION PERMISSION…');mapStatus.textContent='WAITING FOR GPS LOCATION…';enableHeading();
  if(gpsWatch!==null)navigator.geolocation.clearWatch(gpsWatch);
  gpsWatch=navigator.geolocation.watchPosition(pos=>{
    const c=pos.coords;
+   lastCoords={lat:c.latitude,lon:c.longitude};
+   if(!lastDestination){mapAt(c.latitude,c.longitude,15);mapStatus.textContent="MAP CENTERED ON GPS LOCATION";}
    if(c.speed!==null&&Number.isFinite(c.speed)){gpsSpeed.innerHTML=Math.max(0,Math.round(c.speed*2.236936))+' <span class="unit">mph</span>';}
    else gpsSpeed.innerHTML='— <span class="unit">mph</span>';
    if(Number.isFinite(c.heading)&&c.speed!==null&&c.speed>0.8)updateHeading(c.heading);
@@ -153,7 +172,7 @@ document.getElementById('enableGPS').addEventListener('click',()=>{
  },{enableHighAccuracy:true,maximumAge:1000,timeout:15000});
 });
 document.getElementById('kiaAccess').addEventListener('click',()=>location.href='https://apps.apple.com/us/app/kia-access/id1280548773');
-document.getElementById('vehicleInfo').addEventListener('click',()=>alert('LIVE DATA SETUP\n\n1. Use an iOS-compatible Bluetooth Low Energy (BLE) OBD-II adapter. Recommended budget option: Veepeak OBDCheck BLE+ (check current price and listing).\n2. Install Car Scanner ELM OBD2 from the App Store.\n3. Plug the adapter into the OBD-II port under the driver-side dashboard and turn the ignition on.\n4. In Car Scanner: Settings > Adapter OBDII ELM327 > Connection type: Bluetooth LE (4.0+) > Device name: VEEPEAK. Connect inside the app; do not pair from iPad Bluetooth Settings.\n5. In Car Scanner, open All Sensors / Live Data and choose supported values such as RPM, coolant temperature, and vehicle speed.\n\nIMPORTANT: This GitHub Pages dashboard cannot directly read BLE OBD data in ordinary iPad Safari, so its gauges remain placeholders. The adapter and Car Scanner can show live data in the app, but they do not automatically feed values into this webpage. Do not use the iPad dashboard as a replacement for the factory instrument cluster.'));
+document.getElementById('vehicleInfo').addEventListener('click',()=>alert('ENGINE DATA CONNECTION\n\nLive GPS speed and the interactive map work in this website after location permission is granted. Engine RPM, coolant temperature and fault codes require an OBD-II adapter plus a compatible app. Standard iPad Safari cannot connect directly to the adapter through this static GitHub Pages website. Open Car Scanner to view those readings. Never use this dashboard instead of the factory instrument cluster.')); 
 </script>
 </body>
 </html>
